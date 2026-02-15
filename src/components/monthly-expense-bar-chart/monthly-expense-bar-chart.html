@@ -1,0 +1,29 @@
+<div class="card bg-base-100 shadow-sm border border-base-300 dark:border-base-700 ">
+  <div class="card-body ">
+    <div class="flex justify-between items-start mb-4">
+      <div>
+        <h3 class="text-sm font-semibold">Expense Overview</h3>
+        @if(this.monthlyExpenseBarChartData().monthlyExpenses.length > 1){
+          <p class="text-xs text-base-content/60">Last 6 Months</p>
+        } @else {
+          <p class="text-xs text-base-content/60">This Month</p>
+        }
+
+      </div>
+      <div class="text-right">
+        <span class="text-sm font-bold text-primary">{{this.commonService.formatCurr(this.monthlyExpenseBarChartData().totalMonthlyExpense) }}</span>
+
+        <p class="text-[10px] text-success font-medium"> {{this.monthlyExpenseBarChartData().percentageLastMonthlyExpense}}% vs last month</p>
+      </div>
+    </div>
+
+    <!-- Chart Container -->
+    <div class=" w-full h-40">
+      <canvas baseChart
+              [data]="lineChartData"
+              [options]="lineChartOptions"
+              [type]="'line'">
+      </canvas>
+    </div>
+  </div>
+</div>

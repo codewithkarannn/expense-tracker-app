@@ -1,0 +1,59 @@
+<div class="card bg-base-100 w-full shadow-sm border border-base-300 dark:border-base-700">
+  <div class="card-body">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold">Budget Overview</h3>
+      <button class="btn btn-xs btn-primary" (click)="this.showAddForm.set(true)">+ Add Budget</button>
+    </div>
+
+    <!-- Budget List -->
+    <!-- Budget List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      @for (item of budgetList(); track item.budgetMasterId) {
+        <div class="group p-3 rounded-lg border border-base-300">
+
+          <div class="flex w-full justify-between mb-1">
+            <div class="flex items-center gap-2">
+              <button
+                class="btn btn-error btn-circle btn-xs
+              w-0 opacity-0 -translate-x-2
+              overflow-hidden p-0
+              group-hover:w-6 group-hover:opacity-100 group-hover:translate-x-0
+              transition-all duration-200" (click)="deleteBudget(item.budgetMasterId)"
+              > -
+              </button>
+              <span class="text-sm font-medium">
+            {{ item.categoryName }}
+          </span>
+            </div>
+
+            <span class="text-xs font-semibold opacity-80">
+              {{ commonService.formatCurr(item.usedAmount) }} / {{ commonService.formatCurr(item.amount) }}
+            </span>
+          </div>
+
+          <progress
+            class="progress w-full"
+            [ngClass]="item.usedPercentage < 100 ? 'progress-neutral' : 'progress-error'"
+            [value]="item.usedPercentage < 100 ? item.usedPercentage : 100"
+            max="100"
+          ></progress>
+
+        </div>
+      }
+
+    </div>
+
+
+  </div>
+</div>
+
+
+<app-add-budget-form
+  [showAddForm]="this.showAddForm()"
+  (hideAddForm)="this.showAddForm.set(false)"
+>
+
+</app-add-budget-form>

@@ -1,0 +1,16 @@
+
+@if(visible())
+{
+  <div class="toast">
+    <div
+      class="alert"
+      [ngClass]="{
+      'alert-success': type === 'success',
+      'alert-error': type === 'error',
+      'alert-warning': type === 'warning'
+    }"
+    >
+      <span>{{ message }}</span>
+    </div>
+  </div>
+}

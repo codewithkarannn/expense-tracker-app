@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+
+@plugin "daisyui" {
+  themes: all;
+}
+@theme {
+  /* This creates the "font-atkinson" utility class */
+  --font-notosans: "Noto Sans", monospace;
+}
+
+
+
+/* In your component CSS or styles.css */
+.currency-amount {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; /* Semi-bold for emphasis */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}

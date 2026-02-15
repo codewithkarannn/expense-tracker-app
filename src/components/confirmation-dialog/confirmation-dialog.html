@@ -1,0 +1,39 @@
+<!-- Modal - only rendered when isOpen is true -->
+@if (dialogService.isOpen()) {
+  <div class="modal modal-open">
+    <!-- Modal backdrop -->
+    <div class="modal-backdrop" (click)="onCancel()">
+      <button class="hidden">close</button>
+    </div>
+
+    <!-- Modal box -->
+    <div class="modal-box">
+      <!-- Title -->
+      <h3 class="font-bold text-lg">
+        {{ dialogService.dialogConfig().title }}
+      </h3>
+
+      <!-- Message -->
+      <p class="py-4 text-sm">
+        {{ dialogService.dialogConfig().message }}
+      </p>
+
+      <!-- Action buttons -->
+      <div class="modal-action">
+        <!-- Cancel button -->
+        <button
+          class="btn btn-sm {{ dialogService.dialogConfig().cancelButtonClass }}"
+          (click)="onCancel()">
+          {{ dialogService.dialogConfig().cancelText }}
+        </button>
+
+        <!-- Confirm button -->
+        <button
+          class="btn btn-sm {{ dialogService.dialogConfig().confirmButtonClass }}"
+          (click)="onConfirm()">
+          {{ dialogService.dialogConfig().confirmText }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

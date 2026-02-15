@@ -1,0 +1,60 @@
+
+<div class="card bg-base-100 border border-base-300 h-fit   dark:border-base-700  shadow-sm">
+  <div class="card-body w-full">
+
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold">Recent Transactions</h3>
+      <button class="btn btn-primary btn-xs" (click)="this.showAddForm.set(true)">+ Add new</button>
+    </div>
+
+    <!-- Transaction List -->
+    <div class="space-y-3 overflow-y-auto min-h-2 max-h-screen pr-1">
+
+
+      @for(item of transactions() ; track item.transactionMasterId)
+      {
+        <div class="flex items-center justify-between p-3 rounded-lg border border-base-300 hover:bg-base-200 transition">
+          <div class="flex items-center gap-3">
+
+            <div>
+              <p class="font-medium text-sm">{{item.transactionDescription}}</p>
+              <p class="text-xs text-gray-500">{{ item.transactionDate | date: 'd MMM y' }} • Category: {{item.transactionCategory}}</p>
+            </div>
+          </div>
+          <div>
+            @if(item.transactionTypeMasterId ==  TRANSACTIONS_TYPES.INCOME)
+            {
+              <p class="font-semibold text-success">+ {{ this.commonService.formatCurr(item.transactionAmount)}}</p>
+            } @else {
+              <p class="font-semibold text-error">- {{  this.commonService.formatCurr(item.transactionAmount) }}</p>
+            }
+
+
+          </div>
+        </div>
+      }
+      @empty {
+        <p>No transactions found.</p>
+      }
+
+
+    </div>
+
+    <div class="flex justify-end w-full">
+
+    @if(this.totalRecords() !=  this.transactions().length)
+    {
+      <button class="btn btn-xs btn-ghost w-3/12 " (click)="viewMoreRecords()">View All</button>
+    }
+    </div>
+
+  </div>
+</div>
+
+<app-add-new-transaction
+
+  [showAddForm]="this.showAddForm()"
+  (hideAddForm)="this.showAddForm.set(false)"
+>
+
+</app-add-new-transaction>

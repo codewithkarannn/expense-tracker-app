@@ -1,0 +1,289 @@
+
+@if(budgetList().length == 0) {
+  <div class="absolute inset-0 flex items-center justify-center">
+    <div class="text-center max-w-md px-4">
+
+      <div class="text-7xl mb-4">💰</div>
+
+      <h2 class="text-5xl font-bold text-primary">No Budgets Yet</h2>
+
+      <p class="text-xl font-semibold mt-4">Time to Start Planning!</p>
+
+      <p class="text-base-content/70 mt-2 mb-6">
+        Create your first budget to start tracking your spending and reach your financial goals.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+        <button class="btn btn-primary" (click)="this.showAddForm.set(true)" >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Create Your First Budget
+        </button>
+
+
+      </div>
+
+      <!-- Optional: Quick tips -->
+      <div class="mt-8 p-4 bg-base-200 rounded-lg text-left">
+        <p class="font-semibold mb-2">💡 Quick Tips:</p>
+        <ul class="text-sm text-base-content/70 space-y-1">
+          <li>• Start with essential categories like groceries and utilities</li>
+          <li>• Set realistic spending limits based on your income</li>
+          <li>• Review and adjust your budgets monthly</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+} @else {
+  <!-- Search and Controls Card -->
+  <div class="card bg-base-100 shadow-lg border border-base-content/10 mb-4 mt-4">
+    <div class="card-body p-4">
+      <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <!-- Search Box -->
+        <div class="form-control flex items-center gap-2 w-full sm:flex-1 sm:max-w-xs">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search categories..."
+              class="input input-bordered input-sm w-full pl-10"
+              [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event)" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <div>
+            <button class="btn btn-primary btn-xs items-center" (click)="this.showAddForm.set(true)">
+              + Add new
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Badges -->
+        <div class="flex gap-1 bg-base-200 p-1 rounded-lg">
+          <button
+            class="btn btn-xs rounded-md transition-all"
+            [class.btn-primary]="filterStatus() === 'all'"
+            [class.btn-ghost]="filterStatus() !== 'all'"
+            (click)="setFilter('all')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            All
+          </button>
+          <button
+            class="btn btn-xs rounded-md transition-all"
+            [class.btn-warning]="filterStatus() === 'warning'"
+            [class.btn-ghost]="filterStatus() !== 'warning'"
+            (click)="setFilter('warning')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Near Limit
+          </button>
+          <button
+            class="btn btn-xs rounded-md transition-all"
+            [class.btn-error]="filterStatus() === 'over'"
+            [class.btn-ghost]="filterStatus() !== 'over'"
+            (click)="setFilter('over')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Over Budget
+          </button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto rounded-box border border-base-content/10 bg-base-100">
+        <table class="table table-sm">
+          <!-- head -->
+          <thead>
+          <tr class="bg-base-200">
+            <th class="text-xs font-semibold">
+              <button class="flex items-center gap-1 hover:text-primary transition-colors" (click)="sortBy('categoryName')">
+                Category
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'categoryName' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'categoryName'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            </th>
+            <th class="text-xs font-semibold">
+              <button class="flex items-center gap-1 hover:text-primary transition-colors" (click)="sortBy('amount')">
+                Budget
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'amount' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'amount'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            </th>
+            <th class="text-xs font-semibold">
+              <button class="flex items-center gap-1 hover:text-primary transition-colors" (click)="sortBy('usedAmount')">
+                Spent
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'usedAmount' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'usedAmount'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            </th>
+            <th class="text-xs font-semibold">
+              <button class="flex items-center gap-1 hover:text-primary transition-colors" (click)="sortBy('remaining')">
+                Remaining
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'remaining' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'remaining'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            </th>
+            <th class="text-xs font-semibold">
+              <button class="flex items-center gap-1 hover:text-primary transition-colors" (click)="sortBy('percentage')">
+                Progress
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'percentage' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'percentage'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            </th>
+            <th class="text-xs font-semibold">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            @if(filteredBudgets().length === 0) {
+              <tr>
+                <td colspan="6" class="text-center py-12">
+                  <div class="flex flex-col items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-base-content/60 font-medium">No budgets found</p>
+                    <p class="text-base-content/40 text-sm">Try adjusting your search or filters</p>
+                  </div>
+                </td>
+              </tr>
+            }
+            @for(budget of filteredBudgets(); track budget.budgetMasterId) {
+              <tr class="hover:bg-base-200 transition-colors">
+                <!-- Category with icon -->
+                <th class="flex items-center gap-2">
+                  <span>{{ budget.categoryName }}</span>
+                </th>
+
+                <!-- Set Amount -->
+                <td class="font-medium">
+                  {{ this.commonService.formatCurr(budget.amount) }}
+                </td>
+
+                <!-- Used Amount with badge -->
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span>{{ this.commonService.formatCurr(budget.usedAmount) }}</span>
+                    @if(budget.usedAmount > budget.amount) {
+                      <div class="badge badge-error badge-sm gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        Over
+                      </div>
+                    }
+                  </div>
+                </td>
+
+                <!-- Remaining Amount -->
+                <td>
+                <span class="font-semibold" [class]="budget.amount - budget.usedAmount < 0 ? 'text-error' : 'text-success'">
+                  {{ this.commonService.formatCurr(budget.amount - budget.usedAmount) }}
+                </span>
+                </td>
+
+                <!-- Progress Bar -->
+                <td class="w-48">
+                  <div class="flex items-center gap-2">
+                    <progress
+                      class="progress w-32"
+                      [class.progress-success]="(budget.usedAmount / budget.amount) * 100 <= 70"
+                      [class.progress-warning]="(budget.usedAmount / budget.amount) * 100 > 70 && (budget.usedAmount / budget.amount) * 100 <= 90"
+                      [class.progress-error]="(budget.usedAmount / budget.amount) * 100 > 90"
+                      [value]="budget.usedAmount"
+                      [max]="budget.amount">
+                    </progress>
+                    <span class="text-xs font-semibold tabular-nums">
+                    {{ ((budget.usedAmount / budget.amount) * 100).toFixed(0) }}%
+                  </span>
+                  </div>
+                </td>
+
+                <!-- Actions -->
+                <td>
+                  <div class="flex gap-1">
+                    <!-- Edit Button -->
+<!--                    <button-->
+<!--                      class="btn btn-ghost btn-xs hover:btn-primary"-->
+<!--                      (click)="editBudget(budget)"-->
+<!--                      title="Edit">-->
+<!--                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">-->
+<!--                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />-->
+<!--                      </svg>-->
+<!--                    </button>-->
+
+                    <!-- Delete Button -->
+                    <button
+                      class="btn btn-ghost btn-xs hover:btn-error"
+                      (click)="deleteItem(budget.budgetMasterId)"
+                      title="Delete">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+
+          <!-- Footer with totals -->
+          <tfoot>
+          <tr class="bg-base-200 font-bold border-t-2 border-base-content/20">
+            <th class="text-sm">Total</th>
+            <td class="text-sm">{{ this.commonService.formatCurr(getTotalBudget()) }}</td>
+            <td class="text-sm">{{ this.commonService.formatCurr(getTotalUsed()) }}</td>
+            <td class="text-sm" [class]="getTotalBudget() - getTotalUsed() < 0 ? 'text-error' : 'text-success'">
+              {{ this.commonService.formatCurr(getTotalBudget() - getTotalUsed()) }}
+            </td>
+            <td>
+              <div class="flex items-center gap-2">
+                <progress
+                  class="progress w-32"
+                  [class.progress-success]="(getTotalUsed() / getTotalBudget()) * 100 <= 70"
+                  [class.progress-warning]="(getTotalUsed() / getTotalBudget()) * 100 > 70 && (getTotalUsed() / getTotalBudget()) * 100 <= 90"
+                  [class.progress-error]="(getTotalUsed() / getTotalBudget()) * 100 > 90"
+                  [value]="getTotalUsed()"
+                  [max]="getTotalBudget()">
+                </progress>
+                <span class="text-xs font-semibold">
+                {{ ((getTotalUsed() / getTotalBudget()) * 100).toFixed(0) }}%
+              </span>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Results count -->
+      <div class="flex items-center justify-between mt-1 pt-3 border-t border-base-content/10">
+        <div class="text-sm text-base-content/60">
+          Showing <span class="font-semibold text-base-content">{{ filteredBudgets().length }}</span> of <span class="font-semibold text-base-content">{{ budgetList().length }}</span> budgets
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+}
+
+<app-add-budget-form
+  [showAddForm]="this.showAddForm()"
+  (hideAddForm)="this.showAddForm.set(false)"
+>
+
+</app-add-budget-form>
+

@@ -1,0 +1,117 @@
+@if(showAddForm())
+{
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div class="bg-base-100 p-6 border border-base-300 dark:border-base-700 rounded-lg w-full max-w-md">
+      <h3 class="text-lg font-bold">Add New Transaction</h3>
+
+      <!-- Form -->
+      <form [formGroup]="addTransactionForm" class="mt-4">
+        <!-- Grid container with 2 columns on medium screens and up -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+
+          <!-- Transaction Type -->
+          <fieldset class="fieldset ">
+            <label class="label">Transaction Type</label>
+            <select class="select select-sm" formControlName="transactionTypeMasterId" (change)="getTransactionCategories()">
+              <option [ngValue]="null" disabled>Select Transaction Type</option>
+              @for (type of transactionTypes(); track type.transactionTypeMasterId) {
+                <option [ngValue]="type.transactionTypeMasterId">
+                  {{ type.transactionTypename }}
+                </option>
+              }
+            </select>
+            @if(addTransactionForm.get('transactionTypeMasterId')?.invalid &&
+            addTransactionForm.get('transactionTypeMasterId')?.touched) {
+              <div class="text-xs text-red-500 mt-1">This field is required.</div>
+            }
+          </fieldset>
+
+          <!-- Transaction Category -->
+          <fieldset class="fieldset">
+            <label class="label">Transaction Category</label>
+            <select class="select select-sm"   [disabled]="transactionCategories().length == 0" formControlName="transactionCategoryMasterId">
+              <option [ngValue]="null" disabled>Select Transaction Category</option>
+              @for (type of transactionCategories(); track type.transactionCategoryMasterId) {
+                <option [ngValue]="type.transactionCategoryMasterId">
+                  {{ type.transactionCategoryName }}
+                </option>
+              }
+            </select>
+            @if(addTransactionForm.get('transactionCategoryMasterId')?.invalid &&
+            addTransactionForm.get('transactionCategoryMasterId')?.touched) {
+              <div class="text-xs text-red-500 mt-1">This field is required.</div>
+            }
+          </fieldset>
+
+          <!-- Transaction Payment Mode -->
+          <fieldset class="fieldset">
+            <label class="label">Transaction Payment Mode</label>
+            <select class="select select-sm" formControlName="transactionPaymentModeId">
+              <option [ngValue]="null" disabled>Select Payment Mode</option>
+              @for (type of transactionPaymentModes(); track type.paymentModeId) {
+                <option [ngValue]="type.paymentModeId">
+                  {{ type.paymentMode }}
+                </option>
+              }
+            </select>
+            @if(addTransactionForm.get('transactionPaymentModeId')?.invalid &&
+            addTransactionForm.get('transactionPaymentModeId')?.touched) {
+              <div class="text-xs text-red-500 mt-1">This field is required.</div>
+            }
+          </fieldset>
+
+          <!-- Amount -->
+          <fieldset class="fieldset">
+            <label class="label">Amount</label>
+            <input type="number" min="0" class="input input-sm" formControlName="transactionAmount" placeholder="100.0" step="0.01">
+            @if(addTransactionForm.get('transactionAmount')?.invalid &&
+            addTransactionForm.get('transactionAmount')?.touched) {
+              <div class="text-xs text-red-500 mt-1">This field is required.</div>
+            }
+          </fieldset>
+
+          <!-- Date -->
+          <fieldset class="fieldset">
+            <label class="label">Date</label>
+            <input type="date" class="input input-sm" formControlName="transactionDate">
+            @if(addTransactionForm.get('transactionDate')?.invalid &&
+            addTransactionForm.get('transactionDate')?.touched) {
+              <div class="text-xs text-red-500 mt-1">This field is required.</div>
+            }
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <label class="label">Fixed Transaction</label>
+            <div class="flex items-center gap-2 h-8">
+              <input type="checkbox" formControlName="transactionIsFixed" class="checkbox checkbox-primary checkbox-sm" />
+              <span class="text-xs text-gray-500">Recurring every {{this.getSelectedDay()}} of every month</span>
+            </div>
+          </fieldset>
+
+          <!-- Description - spans 2 columns -->
+          <fieldset class="fieldset md:col-span-2">
+            <label class="label">Description</label>
+            <input type="text" class="input input-sm" formControlName="transactionDescription" placeholder="Enter the description">
+            @if(addTransactionForm.get('transactionDescription')?.invalid &&
+            addTransactionForm.get('transactionDescription')?.touched) {
+              <div class="text-xs text-red-500 mt-1">This field is required.</div>
+            }
+          </fieldset>
+
+          <!-- Notes - spans 2 columns -->
+          <fieldset class="fieldset md:col-span-2">
+            <label class="label">Notes <span class="text-gray-400 font-medium">[Optional]</span></label>
+            <textarea class="textarea textarea-sm  h-24" formControlName="transactionNote" rows="3" placeholder="Add any additional notes..."></textarea>
+          </fieldset>
+
+        </div>
+      </form>
+      <div class="mt-6 flex justify-end gap-2">
+        <button class="btn btn-sm" (click)="close()">Cancel</button>
+        <button class="btn btn-primary btn-sm" (click)="onSubmit()">Save</button>
+      </div>
+    </div>
+  </div>
+
+}
+

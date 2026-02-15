@@ -1,0 +1,383 @@
+<!-- name of each tab group should be unique -->
+<div class="tabs   tabs-sm tabs-box">
+  <input type="radio" name="my_tabs_2" class="tab  text-xs" aria-label="All Transactions"   checked="checked"/>
+  <div class="tab-content  border-base-300 bg-base-100 p-4">
+
+
+    @if(transactions().length == 0) {
+      <div class="flex items-center justify-center min-h-[400px]">
+        <div class="text-center  px-4">
+
+          <div class="text-7xl mb-4">📊</div>
+
+          <h2 class="text-3xl font-bold text-primary">No Transactions Yet</h2>
+
+          <p class="mt-2 text-base-content/70">
+            Your transactions will appear here once you start tracking your income and expenses.
+          </p>
+
+          <button class="btn btn-primary mt-6"  (click)="this.showAddForm.set(true)">
+            Add Your First Transaction
+          </button>
+
+        </div>
+      </div>
+    } @else {
+      <div class="form-control flex w-full justify-between  mb-2 items-center gap-2  sm:flex-1 sm:w-full">
+        <div class="flex  justify-start gap-2">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search anything..."
+              class="input input-bordered input-sm w-full pl-10"
+              [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event)" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <div>
+            <button class="btn btn-primary btn-xs items-center" (click)="this.showAddForm.set(true)">
+              + Add new
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-4">
+
+          <!-- LEFT: TABLE -->
+          <div  class="overflow-x-auto rounded-box border border-base-content/10 bg-base-100">
+            <table class="table table-xs">
+
+              <!-- HEADER -->
+              <thead>
+              <tr class="bg-base-200">
+
+                <!-- Date -->
+                <th class="text-xs font-semibold">
+                  <button class="flex items-center gap-1 hover:text-primary" (click)="sortBy('transactionDate')">
+                    Date
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'transactionDate' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'transactionDate'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+
+
+                </th>
+
+                <!-- Category -->
+                <th class="text-xs font-semibold">
+                  <button class="flex items-center gap-1 hover:text-primary"
+                          (click)="sortBy('transactionCategory')">
+                    Category
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'transactionCategory' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'transactionCategory'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                </th>
+
+                <!-- Amount -->
+                <th class="text-xs font-semibold text-right">
+                  <button class="flex items-center justify-end gap-1 w-full hover:text-primary"
+                          (click)="sortBy('transactionAmount')">
+                    Amount
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'transactionAmount' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'transactionAmount'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                </th>
+
+                <!-- Description -->
+                <th class="text-xs font-semibold">
+                  <button class="flex items-center gap-1 hover:text-primary"
+                          (click)="sortBy('transactionDescription')">
+                    Description
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'transactionDescription' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'transactionDescription'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                </th>
+
+                <!-- Payment Mode -->
+                <th class="text-xs font-semibold">
+                  <button class="flex items-center gap-1 hover:text-primary"
+                          (click)="sortBy('transactionPaymentMode')">
+                    Payment Mode
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" [class.rotate-180]="sortColumn() === 'transactionPaymentMode' && sortDirection() === 'desc'" [class.opacity-30]="sortColumn() !== 'transactionPaymentMode'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                </th>
+
+                <!-- Note -->
+                <th class="text-xs font-semibold">
+                  Note
+
+                </th>
+
+                <th class="text-xs font-semibold">Actions</th>
+              </tr>
+              </thead>
+
+              <!-- BODY -->
+              <tbody>
+
+                @if(filteredTransactions().length === 0) {
+                  <tr>
+                    <td colspan="6" class="text-center py-12">
+                      <div class="flex flex-col items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-base-content/60 font-medium">No transactions found</p>
+                        <p class="text-base-content/40 text-sm">Try adjusting your search or filters</p>
+                      </div>
+                    </td>
+                  </tr>
+                } @else {
+
+                  @for (transaction of filteredTransactions(); track transaction.transactionMasterId) {
+                    <tr class="hover:bg-base-200 ">
+
+                      <!-- Date -->
+                      <td>
+                        {{ transaction.transactionDate | date:'d MMM y' }}
+                      </td>
+
+                      <!-- Category -->
+                      <td class="">
+                        {{ transaction.transactionCategory }}
+                      </td>
+
+                      <!-- Amount -->
+                      <td class="font-medium text-right"
+                          [ngClass]="transaction.transactionTypeMasterId == 2 ? 'text-error' : 'text-success'">
+
+                        @if (transaction.transactionTypeMasterId == 2) {
+                          - {{ commonService.formatCurr(transaction.transactionAmount) }}
+                        } @else {
+                          + {{ commonService.formatCurr(transaction.transactionAmount) }}
+                        }
+
+                      </td>
+
+                      <!-- Description -->
+                      <td>
+                        {{ transaction.transactionDescription || '--' }}
+                      </td>
+
+                      <!-- Payment Mode -->
+                      <td>
+                        {{ transaction.transactionPaymentMode }}
+                      </td>
+
+                      <!-- Note -->
+                      <td>
+                        {{ transaction.transactionNote || '--' }}
+                      </td>
+
+                      <!-- Actions -->
+                      <td>
+                        <div class="flex gap-1">
+                          <button
+                            class="btn btn-ghost btn-xs hover:btn-error"
+                            title="Delete"
+                            (click)="deleteTransaction(transaction.transactionMasterId)">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="h-4 w-4"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                              <path stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+
+                    </tr>
+                  }
+                }
+
+              </tbody>
+
+
+            </table>
+          </div>
+
+          <!-- RIGHT: FILTER PANEL -->
+          <div class="bg-base-100 text-xs border border-base-300 rounded-xl p-4 h-fit sticky top-4">
+
+            <h3 class="font-semibold mb-3">Filters</h3>
+
+            <!-- Transaction Type -->
+            <div class="mb-4">
+              <p class="mb-2">Type</p>
+
+              <div class="flex gap-2">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="checkbox checkbox-primary checkbox-xs"
+                         [checked]="selectedTypes().includes('income')"
+                         (change)="toggleType('income', $event)">
+                  Income
+                </label>
+
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="checkbox  checkbox-primary checkbox-xs"
+                         [checked]="selectedTypes().includes('expense')"
+                         (change)="toggleType('expense', $event)">
+                  Expense
+                </label>
+              </div>
+
+            </div>
+
+            <!-- Category Filter -->
+            <div>
+              <p class=" font-medium mb-2">Category</p>
+
+              <select class="select select-xs select-bordered w-full"
+                      [ngModel]="selectedCategory()"
+                      (ngModelChange)="selectedCategory.set($event)">
+                <option value="">All</option>
+                @for (cat of categories(); track cat) {
+                  <option [value]="cat">{{cat}}</option>
+                }
+              </select>
+            </div>
+            <!--Date filter-->
+            <div class="mt-4">
+              <p class="font-medium mb-2">Date Range</p>
+
+              <div class="flex gap-1">
+                <input type="date"
+                       class="input input-xs input-bordered w-full mb-2"
+                       [ngModel]="fromDate()"
+                       (ngModelChange)="fromDate.set($event)"  />
+
+                <input type="date"
+                       class="input input-xs input-bordered w-full"
+                       [ngModel]="toDate()"
+                       (ngModelChange)="toDate.set($event)"  />
+              </div>
+
+            </div>
+
+            <!-- Payment Mode filter-->
+            <div class="mt-4">
+              <p class="font-medium mb-2">Payment Mode</p>
+
+              @for (mode of paymentModes(); track mode) {
+                <label class="flex items-center gap-2 mb-1">
+                  <input type="checkbox"
+                         class="checkbox checkbox-secondary checkbox-xs"
+                         [checked]="selectedPaymentModes().includes(mode!)"
+                         (change)="togglePayment(mode!, $event)">
+                  {{ mode }}
+                </label>
+              }
+            </div>
+
+
+
+
+            <button class="btn btn-outline btn-xs w-full mt-3"
+                    (click)="clearFilters()">
+              Clear Filters
+            </button>
+          </div>
+
+        </div>
+
+
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-4">
+
+        <!-- Pagination -->
+        <div class="join">
+
+          <!-- Prev -->
+          <button class="join-item btn btn-sm"
+                  (click)="goToPage(page() - 1)"
+                  [disabled]="page() === 1">
+            «
+          </button>
+
+          @for (p of visiblePages(); track p) {
+
+            @if (p === 'dots') {
+              <button class="join-item btn btn-sm btn-disabled">…</button>
+            } @else {
+
+              <button
+                class="join-item btn btn-sm"
+                [class.btn-active]="page() === p"
+                (click)="goToPage(p)">
+                {{ p }}
+              </button>
+
+            }
+
+          }
+
+          <!-- Next -->
+          <button class="join-item btn btn-sm"
+                  (click)="goToPage(page() + 1)"
+                  [disabled]="page() === totalPages()">
+            »
+          </button>
+
+        </div>
+
+        <!-- Right Controls -->
+        <div class="flex items-center gap-3">
+
+          <!-- Page Size -->
+          <div class="flex items-center gap-2">
+            <span class="text-sm opacity-70">Rows</span>
+
+            <select
+              class="select select-bordered select-sm"
+              [ngModel]="pageSize()"
+              (ngModelChange)="changePageSize($event)">
+              <option [value]="5">5</option>
+              <option [value]="10">10</option>
+              <option [value]="20">20</option>
+            </select>
+          </div>
+
+          <!-- Page Info -->
+          <div class="text-sm opacity-70">
+            Page <span class="font-semibold">{{ page() }}</span>
+            of
+            <span class="font-semibold">{{ totalPages() }}</span>
+          </div>
+
+        </div>
+      </div>
+
+
+
+
+    }
+  </div>
+
+  <input type="radio" name="my_tabs_2" class="tab  text-xs" aria-label="Fixed Transactions" />
+  <div class="tab-content border-base-300 bg-base-100 p-10">Tab content 2</div>
+
+
+</div>
+<app-add-new-transaction
+
+  [showAddForm]="this.showAddForm()"
+  (hideAddForm)="this.showAddForm.set(false)"
+>
+
+</app-add-new-transaction>
