@@ -1,0 +1,55 @@
+
+<div class="navbar bg-base-100 shadow-sm min-h-10 py-2 px-6">
+  <div class="bg-base-100 items-center flex w-full justify-between">
+
+    <div class="flex flex-none">
+      <ul class="menu menu-horizontal p-0 gap-1">
+        <li>
+          <a class="btn btn-sm btn-ghost"
+               [routerLink]="this.ROUTES_CONSTANTS.DASHBOARD"
+               routerLinkActive="btn-active"
+               [routerLinkActiveOptions]="{exact : true}"
+               (click)="navigateToDash()"> Dashboard
+          </a>
+        </li>
+        <li>
+          <a  class="btn btn-sm btn-ghost"
+                [routerLink]="this.ROUTES_CONSTANTS.ALL_TRANSACTIONS"
+                routerLinkActive="btn-active"
+                [routerLinkActiveOptions]="{exact : true}"
+                (click)="navigateAllTransactions()">Transactions
+          </a>
+        </li>
+        <li>
+          <a class="btn btn-sm btn-ghost"
+               [routerLink]="this.ROUTES_CONSTANTS.BUDGET_LIST"
+               routerLinkActive="btn-active"
+               [routerLinkActiveOptions]="{exact : true}"
+               (click)="navigateToBudgetList()">Budgets
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex w-full justify-end gap-6 items-center ">
+      <div class="flex w-full justify-end gap-4">
+        @if(this.authService.isLoggedIn())
+        {
+
+          <button class="btn btn-error btn-sm" (click)="logout()">Logout</button>
+        }
+      </div>
+
+      <app-theme-controller></app-theme-controller>
+    </div>
+
+  </div>
+</div>
+
+<app-add-new-transaction
+
+  [showAddForm]="this.showAddForm()"
+  (hideAddForm)="this.showAddForm.set(false)"
+>
+
+</app-add-new-transaction>

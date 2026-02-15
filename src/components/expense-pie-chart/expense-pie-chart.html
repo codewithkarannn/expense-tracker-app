@@ -1,0 +1,21 @@
+<div class="card bg-base-100 shadow-sm border border-base-300 dark:border-base-700">
+  <div class="card-body">
+    <div class="flex justify-between items-center">
+      <h3 class="text-sm font-bold">Expenses This Month</h3>
+    </div>
+
+    <div class="flex h-48 justify-center items-center">
+      @if (isLoading()) {
+        <span class="loading loading-spinner loading-md"></span>
+      } @else if (categoryExpense().length === 0) {
+        <p class="text-sm text-gray-500">No expenses this month</p>
+      } @else {
+        <canvas baseChart
+                [data]="pieChartData"
+                [options]="pieChartOptions"
+                [type]="'pie'">
+        </canvas>
+      }
+    </div>
+  </div>
+</div>

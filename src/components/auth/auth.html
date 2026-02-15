@@ -1,0 +1,180 @@
+
+<!--Login Form-->
+@if(isLoginForm)
+{
+  <div class="mt-20 flex items-center justify-center">
+    <div class="card card-border bg-base-100 w-96">
+      <div class="card-body">
+        <h2 class="card-title text-xl! flex justify-center">Welcome Back !!</h2>
+
+
+        <div class="p-4">
+          <form [formGroup]="loginForm">
+
+
+            <fieldset class="fieldset">
+              <label class=" label">Email</label>
+              <input type="email" class="input" formControlName="userEmail" placeholder="Email" />
+              @if(loginForm.get('userEmail')?.touched && loginForm.get('userEmail')?.invalid)
+              {
+                @if(loginForm.get('userEmail')?.errors?.['required'])
+                {
+                  <div class="text-xs  text-red-500">Email is required.</div>
+                }
+                @if(loginForm.get('userEmail')?.errors?.['email'])
+                {
+                  <div class="text-xs  text-red-500">Invalid email format.</div>
+                }
+
+              }
+
+              <label class="label">Password</label>
+              <input type="password" class="input" formControlName="password" placeholder="Password" />
+
+              @if(loginForm.get('password')?.touched && loginForm.get('password')?.invalid)
+              {
+                @if(loginForm.get('password')?.errors?.['required'])
+                {
+                  <div class="text-xs  text-red-500">Password is required.</div>
+                }
+
+
+              }
+
+            </fieldset>
+          </form>
+        </div>
+
+
+
+        <div class="card-actions justify-center w-full px-4">
+          <button class="btn btn-primary w-full!" (click)="onSubmit()">Login</button>
+          <a class="flex w-full justify-end btn btn-link text-xs" (click)="this.isLoginForm = false"><span>New user?</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@else {
+  <!--Register form-->
+  <div class="mt-20 flex items-center justify-center">
+    <div class="card card-border bg-base-100 w-96">
+      <div class="card-body">
+        <h2 class="card-title text-xl! flex justify-center">Welcome !!</h2>
+        <div class="p-4">
+        <form [formGroup]="registerForm">
+        <fieldset class="fieldset">
+
+          <label class=" label">First Name</label>
+          <input type="text" class="input" formControlName="firstName" placeholder="First Name" />
+          @if(registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid)
+          {
+            @if(registerForm.get('firstName')?.errors?.['required'])
+            {
+              <div class="text-xs  text-red-500">First name  is required.</div>
+            }
+
+          }
+
+          <label class=" label">Last Name</label>
+          <input type="text" class="input" formControlName="lastName" placeholder="Last Name" />
+          @if(registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid)
+          {
+            @if(registerForm.get('lastName')?.errors?.['required'])
+            {
+              <div class="text-xs  text-red-500">Last name  is required.</div>
+            }
+
+          }
+
+
+
+          <label class=" label">Email</label>
+          <input type="email" class="input" formControlName="email" placeholder="Email" />
+          @if(registerForm.get('email')?.touched && registerForm.get('email')?.invalid)
+          {
+            @if(registerForm.get('email')?.errors?.['required'])
+            {
+              <div class="text-xs  text-red-500">Email is required.</div>
+            }
+            @if(registerForm.get('email')?.errors?.['email'])
+            {
+              <div class="text-xs  text-red-500">Invalid email format.</div>
+            }
+
+          }
+
+          <fieldset class="fieldset">
+            <label class="label">Currency</label>
+            <select class="select select-sm" formControlName="currencyMasterId">
+              <option [ngValue]="null" disabled>Select Currency</option>
+              @for (type of currencies(); track type.currencyMasterId) {
+                <option [ngValue]="type.currencyMasterId">
+                  ({{type.currencySymbol}})  {{ type.currencyName }}
+                </option>
+              }
+            </select>
+            @if(registerForm.get('currencyMasterId')?.invalid &&
+            registerForm.get('currencyMasterId')?.touched) {
+              <div class="text-xs text-red-500 mt-1">This field is required.</div>
+            }
+          </fieldset>
+          <label class="label">Password</label>
+          <input type="password" class="input" formControlName="password" placeholder="Password" />
+
+          @if(registerForm.get('password')?.touched && registerForm.get('password')?.invalid)
+          {
+            @if(registerForm.get('password')?.errors?.['required'])
+            {
+              <div class="text-xs  text-red-500">Password is required.</div>
+            }
+
+            @if (registerForm.get('password')?.errors?.['pattern']) {
+              <div class="text-xs text-red-500">
+                Password must contain:
+                <ul class="list-disc ml-4">
+                  <li>1 uppercase letter</li>
+                  <li>1 lowercase letter</li>
+                  <li>1 number</li>
+                  <li>1 special character</li>
+                </ul>
+              </div>
+            }
+          }
+
+        </fieldset>
+
+
+
+
+          <fieldset class="fieldset">
+            <label class="label">Confirm Password</label>
+            <input
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="Confirm Password"
+              class="input input-bordered"
+            />
+
+            @if (registerForm.hasError('passwordMismatch')) {
+              <div class="text-xs text-red-500">
+                Passwords do not match.
+              </div>
+            }
+
+
+
+          </fieldset>
+        </form>
+          <div class="card-actions justify-center w-full mt-4">
+            <button class="btn btn-primary w-full!" (click)="onSubmitRegister()">Sign up</button>
+            <a class="flex w-full justify-end btn btn-link text-xs" (click)="this.isLoginForm = true"><span>Existing user?</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+}
+
