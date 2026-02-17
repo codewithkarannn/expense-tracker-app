@@ -98,7 +98,7 @@
 
       <!-- Table -->
       <div class="overflow-x-auto rounded-box border border-base-content/10 bg-base-100">
-        <table class="table table-sm">
+        <table class="table table-xs">
           <!-- head -->
           <thead>
           <tr class="bg-base-200">
@@ -161,20 +161,20 @@
             }
             @for(budget of filteredBudgets(); track budget.budgetMasterId) {
               <tr class="hover:bg-base-200 transition-colors">
-                <!-- Category with icon -->
-                <th class="flex items-center gap-2">
+                <!-- Category -->
+                <td>
                   <span>{{ budget.categoryName }}</span>
-                </th>
+                </td>
 
                 <!-- Set Amount -->
-                <td class="font-medium">
-                  {{ this.commonService.formatCurr(budget.amount) }}
+                <td>
+                  <span>  {{ this.commonService.formatCurr(budget.amount) }}</span>
                 </td>
 
                 <!-- Used Amount with badge -->
-                <td>
-                  <div class="flex items-center gap-2">
-                    <span>{{ this.commonService.formatCurr(budget.usedAmount) }}</span>
+
+                <td class="gap-2">
+                  <span>{{ this.commonService.formatCurr(budget.usedAmount) }} </span>
                     @if(budget.usedAmount > budget.amount) {
                       <div class="badge badge-error badge-sm gap-1">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -183,8 +183,8 @@
                         Over
                       </div>
                     }
-                  </div>
                 </td>
+
 
                 <!-- Remaining Amount -->
                 <td>
